@@ -1,0 +1,19 @@
+services:
+  server:
+    build: ./server
+    environment:
+      PORT: 4000
+      CLIENT_ORIGIN: http://localhost:8080
+      JWT_SECRET: change-me-in-prod
+    ports:
+      - "4000:4000"
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: http://localhost:4000
+    ports:
+      - "8080:80"
+    depends_on:
+      - server
