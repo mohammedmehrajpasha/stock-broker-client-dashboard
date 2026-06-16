@@ -188,4 +188,4 @@ included so you can see I built this with the bigger picture in mind:
 
 ---
 
-*Built by Mohammad Pasha as part of the recruitment assignment.*
+*Built by Mohammed Mehraj Pasha as part of the recruitment assignment.*
