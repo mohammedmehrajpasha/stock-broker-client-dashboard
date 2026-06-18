@@ -18,10 +18,22 @@ import type {
 } from './types.js';
 
 const PORT = Number(process.env.PORT ?? 4000);
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? 'http://localhost:5173';
+
+// Comma-separated allow-list of frontend origins. Localhost is always allowed
+// for local dev; set CLIENT_ORIGIN to your deployed Vercel URL in production
+// (e.g. CLIENT_ORIGIN=https://tickr.vercel.app).
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173',
+  ...(process.env.CLIENT_ORIGIN ?? '').split(',').map((o) => o.trim()).filter(Boolean),
+];
+
+const corsOptions = {
+  origin: ALLOWED_ORIGINS,
+  credentials: true,
+};
 
 const app = express();
-app.use(cors({ origin: CLIENT_ORIGIN }));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 /* ------------------------------- REST API ------------------------------- */
@@ -60,7 +72,7 @@ const io = new Server<
   ServerToClientEvents,
   Record<string, never>,
   SocketAuthData
->(server, { cors: { origin: CLIENT_ORIGIN } });
+>(server, { cors: corsOptions });
 
 // Authenticate every socket from the JWT supplied in the handshake.
 io.use((socket, next) => {
@@ -116,5 +128,5 @@ function roomFor(ticker: string): string {
 
 server.listen(PORT, () => {
   console.log(`📈 Stock dashboard API + WebSocket listening on :${PORT}`);
-  console.log(`   Allowing client origin: ${CLIENT_ORIGIN}`);
+  console.log(`   Allowing client origins: ${ALLOWED_ORIGINS.join(', ')}`);
 });

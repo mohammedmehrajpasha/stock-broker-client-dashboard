@@ -66,6 +66,37 @@ docker compose up --build     # UI → http://localhost:8080, API → :4000
 
 ---
 
+## Live deployment (Vercel + Render)
+
+The app is split into a static frontend and a long-lived WebSocket backend, so
+they're hosted separately:
+
+- **Frontend → Vercel** (static React build)
+- **Backend → Render** (Node web service; WebSockets supported on the free tier)
+
+Config for both is committed: [`render.yaml`](render.yaml) and
+[`client/vercel.json`](client/vercel.json).
+
+**1. Backend on Render**
+- New → **Blueprint** → connect this repo → Render reads `render.yaml`.
+- `JWT_SECRET` is auto-generated; leave `CLIENT_ORIGIN` empty for now.
+- Deploy and note the URL, e.g. `https://tickr-server.onrender.com`.
+
+**2. Frontend on Vercel**
+- New Project → import this repo → set **Root Directory** to `client`.
+- Add env var `VITE_API_URL = https://tickr-server.onrender.com` (your Render URL).
+- Deploy and note the URL, e.g. `https://tickr.vercel.app`.
+
+**3. Connect them**
+- Back in Render, set `CLIENT_ORIGIN = https://tickr.vercel.app` and redeploy
+  (this is the CORS allow-list — the backend already trusts `localhost` too).
+
+> Render's free tier sleeps after ~15 min idle, so the first request after a lull
+> takes ~30–50s to wake. Fine for a demo; mention it if a reviewer sees a slow
+> first load.
+
+---
+
 ## The design, in one picture
 
 ```
