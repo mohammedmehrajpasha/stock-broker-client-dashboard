@@ -1,0 +1,17 @@
+# Render Blueprint for the Tickr backend (API + WebSocket gateway).
+# In Render: New → Blueprint → connect this repo → it reads this file.
+# After deploy, set CLIENT_ORIGIN to your Vercel URL (e.g. https://tickr.vercel.app).
+services:
+  - type: web
+    name: tickr-server
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: CLIENT_ORIGIN
+        sync: false # set this in the dashboard to your Vercel domain
+      - key: JWT_SECRET
+        generateValue: true # Render generates a strong secret
