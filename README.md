@@ -10,6 +10,22 @@ It implements every requirement, is fully typed end-to-end, ships with an
 automated test that proves the real-time behaviour, and runs with a single
 command.
 
+## 🔴 Live demo
+
+| | URL |
+|---|---|
+| **App (try it)** | **https://client-pi-seven-85.vercel.app** |
+| Backend API | https://tickr-server.onrender.com |
+
+Sign in with any email and add tickers. To see the multi-user requirement,
+open the link in two browsers/incognito windows with different emails and
+different stocks — both update live and independently.
+
+> Hosted as a split deployment: **frontend on Vercel**, **WebSocket backend on
+> Render**. Render's free tier sleeps after ~15 min idle, so the *first* load
+> after a lull can take ~30–50s to wake the backend — then prices stream every
+> second.
+
 ---
 
 ## TL;DR for the reviewer
